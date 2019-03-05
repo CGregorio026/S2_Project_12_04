@@ -1,12 +1,29 @@
 "use strict";
 
+// document.getElementsByTagName("section")[0].innerHTML = reportHTML;
+
+// function candidateRows(raceNum, totalVotes) {
+//     var rowHTML = "";
+//     for (var j = 0; j <= 2; j++) {
+//         var candidateName = candidate[raceNum][j];
+//         var candidateParty = party[raceNum][j];
+//         var candidateVotes = votes[raceNum][j];
+//         var candidatePercent = calcPercent(candidateVotes, totalVotes);
+//         rowHTML += "<tr> <td>" + candidateName + "(" + candidateParty + ")</td> <td>" + candidateVotes.toLocaleString() + "(" + candidatePercent.toFixed(1) + "%)</td></tr>";
+//     }
+//     return rowHTML;
+// }
+
+
+
+
+
 /*
    New Perspectives on HTML5 and CSS3, 7th Edition
    Tutorial 10
    Case Problem 4
-
-   Author: 
-   Date:   
+   Author: Christian Gregorio
+   Date:   2.28.19
    
    Filename: vw_results.js
    
@@ -23,44 +40,79 @@
    
       
 */
-// begins to create a report of the voter results
+
+/* Display the election results title */
 var reportHTML = "<h1>" + raceTitle + "</h1>";
-
+/* Loop through each race in the report */
 for (var i = 0; i < race.length; i++) {
+
+    /* Calculate the total number of votes in each race */
     var totalVotes = 0;
-    // applies the calcsum function to each of the items in the votes array.
     votes[i].forEach(calcSum);
-    reportHTML += "<table> <caption>" + race[i] + "</caption> <tr><th>Candidate</th><th>Votes</th></tr>";
 
-    candidateRows(i, totalVotes);
+    /* Generate the HTML code showing the race name and title row */
+    reportHTML += "<table><caption>" + race[i] + "</caption><tr><th>Candidate</th><th>Votes</th></tr>";
 
-    reportHTML += candidateRows;
-    // Finishes the table
+    /* Generate the HTML code for each candidate row */
+    reportHTML += candidateRows(i, totalVotes);
+
     reportHTML += "</table>";
+
 }
-
-document.getElementById('section').innerHTML = reportHTML;
-
+/* Display the report in the first and only section element */
+document.getElementsByTagName("section")[0].innerHTML = reportHTML;
+/* Function to generate the candidate rows */
 function candidateRows(raceNum, totalVotes) {
     var rowHTML = "";
-    for (var j = 0; j < 3; j++) {
+
+    /* Loop through three candidates */
+    for (var j = 0; j <= 2; j++) {
+
+        /* Votes and Affiliation of the current candidate in the loop */
+
         var candidateName = candidate[raceNum][j];
         var candidateParty = party[raceNum][j];
         var candidateVotes = votes[raceNum][j];
+
+        /* Calculate the percent of the vote by each candidate */
         var candidatePercent = calcPercent(candidateVotes, totalVotes);
-        rowHTML += "<tr> <td>" + candidateName + "(" + candidateParty + ")</td> <td>" + candidateVotes.toLocaleString() + "(" + candidatePercent.toFixed(1) + ")</td></tr>";
+
+        rowHTML += "<tr> <td>" + candidateName + " (" + candidateParty + ") </td> <td>" + candidateVotes.toLocaleString() + "( " + candidatePercent.toFixed(1) + "%)</td>";
+
+        //for loop containing the bar chart to show the candidates vote percentage
+        /* Generate a bar chart showing the candidate's vote percentage */
+        for (var k = 0; k < candidatePercent; k++) {
+            rowHTML += createBar(candidateParty, candidatePercent);
+        }
+
+        rowHTML += "</tr>";
     }
+
     return rowHTML;
 }
-
-
-
 /* Callback Function to calculate an array sum */
 function calcSum(value) {
     totalVotes += value;
 }
-
 /* Function to calculate a percentage */
 function calcPercent(value, sum) {
     return (100 * value / sum);
+}
+/* Function to create a bar chart for different candidate vote percentages */
+
+function createBar(partyType) {
+    /* Write a table cell for each percentage point */
+    var barHTML = "";
+    switch (partyType) {
+        case "D":
+            barHTML = "<td class='dem'></td>";
+            break;
+        case "R":
+            barHTML = "<td class='rep'></td>";
+            break;
+        case "I":
+            barHTML = "<td class='ind'></td>";
+            break;
+    }
+    return barHTML;
 }
